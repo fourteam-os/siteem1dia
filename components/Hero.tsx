@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { Zap, CreditCard, Headphones } from 'lucide-react'
+import Image from 'next/image'
 import { WHATSAPP_URL } from '@/lib/constants'
 
 const SEALS = [
@@ -112,147 +113,40 @@ export function Hero() {
             </motion.div>
           </div>
 
-          {/* RIGHT — device mockup */}
+          {/* RIGHT — device mockup — desktop */}
           <motion.div
-            className="relative hidden lg:block"
+            className="relative hidden lg:flex items-center justify-center"
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            {/* Glow behind devices */}
             <div className="absolute -inset-8 bg-[#FF6B00]/6 rounded-3xl blur-2xl" />
-
-            {/* Desktop mockup */}
-            <div className="relative rounded-xl border border-white/10 overflow-hidden shadow-[0_24px_80px_rgba(0,0,0,0.7)] bg-[#111113] animate-float">
-              {/* Browser chrome */}
-              <div className="bg-[#1A1A1C] px-4 py-3 flex items-center gap-3 border-b border-white/8">
-                <div className="flex gap-1.5 flex-shrink-0">
-                  <div className="w-3 h-3 rounded-full bg-[#FF5F57]/70" />
-                  <div className="w-3 h-3 rounded-full bg-[#FFBD2E]/70" />
-                  <div className="w-3 h-3 rounded-full bg-[#28CA41]/70" />
-                </div>
-                <div className="flex-1 bg-[#09090B]/60 rounded-md px-3 py-1.5 text-xs text-[#6B7280] font-mono flex items-center gap-1.5">
-                  <span className="text-[#FF6B00] text-[10px]">●</span>
-                  clinicavitalis.com.br
-                </div>
-              </div>
-
-              {/* Website content */}
-              <div className="bg-[#09090B]">
-                {/* Nav */}
-                <div className="flex items-center justify-between px-5 py-3 border-b border-white/5">
-                  <div className="h-4 w-28 bg-white/20 rounded" />
-                  <div className="flex items-center gap-3">
-                    <div className="h-3 w-10 bg-white/10 rounded" />
-                    <div className="h-3 w-14 bg-white/10 rounded" />
-                    <div className="h-7 w-24 bg-[#FF6B00]/80 rounded-lg" />
-                  </div>
-                </div>
-
-                {/* Hero */}
-                <div className="px-5 py-6 bg-gradient-to-br from-[#111113] to-[#09090B]">
-                  <div className="h-2.5 w-36 bg-[#FF6B00]/40 rounded-full mb-3" />
-                  <div className="h-5 w-4/5 bg-white/30 rounded-lg mb-2" />
-                  <div className="h-5 w-3/5 bg-white/20 rounded-lg mb-4" />
-                  <div className="h-3 w-full bg-white/10 rounded mb-1.5" />
-                  <div className="h-3 w-4/5 bg-white/8 rounded mb-5" />
-                  <div className="flex gap-2.5">
-                    <div className="h-9 w-32 bg-[#FF6B00]/80 rounded-xl flex items-center justify-center">
-                      <div className="h-2.5 w-20 bg-white/60 rounded" />
-                    </div>
-                    <div className="h-9 w-28 bg-[#22C55E]/60 rounded-xl flex items-center justify-center">
-                      <div className="h-2.5 w-16 bg-white/50 rounded" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Content cards */}
-                <div className="px-5 py-4 grid grid-cols-3 gap-3 bg-[#111113]/50">
-                  {['Consultas', 'Exames', 'Telemedicina'].map((item) => (
-                    <div key={item} className="bg-[#1A1A1C] rounded-lg p-3 border border-white/8">
-                      <div className="w-5 h-5 bg-[#FF6B00]/30 rounded mb-2" />
-                      <div className="h-2.5 w-full bg-white/20 rounded mb-1.5" />
-                      <div className="h-2 w-3/4 bg-white/10 rounded" />
-                    </div>
-                  ))}
-                </div>
-
-                {/* CTA bar */}
-                <div className="px-5 py-3.5 border-t border-white/5 flex items-center justify-between bg-[#09090B]">
-                  <div>
-                    <div className="h-2.5 w-32 bg-white/15 rounded mb-1.5" />
-                    <div className="h-2 w-24 bg-white/8 rounded" />
-                  </div>
-                  <div className="h-8 w-28 bg-[#22C55E]/60 rounded-lg" />
-                </div>
-              </div>
-            </div>
-
-            {/* Phone mockup */}
-            <div
-              className="absolute -bottom-5 -right-6 w-[110px] shadow-2xl animate-float"
-              style={{ animationDelay: '1.5s' }}
-            >
-              <div className="rounded-2xl border-2 border-white/10 overflow-hidden bg-[#111113]">
-                <div className="bg-[#1A1A1C] py-2 flex justify-center">
-                  <div className="w-8 h-1 bg-[#374151] rounded-full" />
-                </div>
-                <div className="bg-[#09090B] p-2">
-                  <div className="h-2 w-full bg-white/20 rounded mb-1.5" />
-                  <div className="h-9 bg-gradient-to-b from-[#1A1A1C] to-[#09090B] rounded mb-2 flex items-center justify-center">
-                    <div className="w-4 h-4 bg-[#FF6B00]/40 rounded" />
-                  </div>
-                  <div className="h-2 w-3/4 bg-white/12 rounded mb-1" />
-                  <div className="h-2 w-1/2 bg-white/8 rounded mb-2" />
-                  <div className="h-6 bg-[#22C55E]/50 rounded-xl" />
-                </div>
-                <div className="bg-[#1A1A1C] py-2 flex justify-center">
-                  <div className="w-5 h-5 border border-[#374151] rounded-full" />
-                </div>
-              </div>
-            </div>
-
-            {/* Badge flutuante */}
-            <div className="absolute -top-4 -left-4 bg-[#111113] border border-[#FF6B00]/25 rounded-xl px-3.5 py-2.5 shadow-lg">
-              <div className="flex items-center gap-2">
-                <div className="w-5 h-5 rounded-full bg-[#FF6B00]/20 border border-[#FF6B00]/30 flex items-center justify-center">
-                  <Zap className="w-3 h-3 text-[#FF6B00]" />
-                </div>
-                <span className="text-xs text-[#F7F7F5] font-semibold">Site publicado</span>
-              </div>
-              <p className="text-[10px] text-[#6B7280] mt-0.5 ml-7">Entregue em 18h</p>
-            </div>
+            <Image
+              src="/hero-mockup.png"
+              alt="Exemplo de site profissional criado em 1 dia"
+              width={620}
+              height={480}
+              className="relative w-full max-w-[580px] drop-shadow-2xl animate-float"
+              priority
+            />
           </motion.div>
         </div>
 
-        {/* Mobile mockup — hidden on phones, visible on tablets only */}
+        {/* Mockup — tablet e mobile */}
         <motion.div
-          className="hidden sm:block lg:hidden mt-8"
+          className="lg:hidden mt-8 flex justify-center"
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
-          <div className="rounded-xl border border-white/10 overflow-hidden shadow-2xl bg-[#111113]">
-            <div className="bg-[#1A1A1C] px-4 py-2.5 flex items-center gap-2.5 border-b border-white/8">
-              <div className="flex gap-1">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]/70" />
-                <div className="w-2.5 h-2.5 rounded-full bg-[#FFBD2E]/70" />
-                <div className="w-2.5 h-2.5 rounded-full bg-[#28CA41]/70" />
-              </div>
-              <div className="flex-1 bg-[#09090B]/50 rounded px-2 py-1 text-xs text-[#6B7280] font-mono">
-                seunegocio.com.br
-              </div>
-            </div>
-            <div className="bg-[#09090B] p-4">
-              <div className="h-2.5 w-24 bg-[#FF6B00]/30 rounded-full mb-3" />
-              <div className="h-4 w-5/6 bg-white/25 rounded mb-2" />
-              <div className="h-4 w-3/4 bg-white/15 rounded mb-4" />
-              <div className="flex gap-2">
-                <div className="h-9 w-32 bg-[#FF6B00]/70 rounded-xl" />
-                <div className="h-9 w-28 bg-[#22C55E]/50 rounded-xl" />
-              </div>
-            </div>
-          </div>
+          <Image
+            src="/hero-mockup.png"
+            alt="Exemplo de site profissional criado em 1 dia"
+            width={560}
+            height={430}
+            className="w-full max-w-[480px] sm:max-w-[540px] drop-shadow-2xl"
+            priority
+          />
         </motion.div>
       </div>
     </section>
