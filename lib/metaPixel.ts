@@ -19,6 +19,7 @@ export function fireLeadEvent(answers: FormAnswers): void {
       win.fbq('trackCustom', 'PreQualificacaoCompleta', {
         empresa_ou_servico: answers.empresa,
         segmento: answers.segmento,
+        whatsapp: answers.whatsapp,
         prazo: answers.prazo,
         ciente_valor: answers.ciente,
         briefing_materiais: answers.briefing,
@@ -32,6 +33,7 @@ export function fireLeadEvent(answers: FormAnswers): void {
         event: 'pre_qualificacao_completa',
         empresa_ou_servico: answers.empresa,
         segmento: answers.segmento,
+        whatsapp: answers.whatsapp,
         prazo: answers.prazo,
         ciente_valor: answers.ciente,
         briefing_materiais: answers.briefing,

@@ -5,6 +5,7 @@ export const OFFER_NAME = 'Site em 1 Dia'
 export interface FormAnswers {
   empresa: string
   segmento: string
+  whatsapp: string
   prazo: string
   ciente: string
   briefing: string
@@ -17,6 +18,7 @@ export function buildWhatsAppUrl(answers: FormAnswers): string {
     `Minhas respostas:\n` +
     `• Empresa/prestador: ${answers.empresa}\n` +
     `• Segmento: ${answers.segmento}\n` +
+    `• Meu WhatsApp: ${answers.whatsapp}\n` +
     `• Prazo desejado: ${answers.prazo}\n` +
     `• Ciente do valor R$497: ${answers.ciente}\n` +
     `• Briefing e materiais: ${answers.briefing}`

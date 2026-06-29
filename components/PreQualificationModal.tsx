@@ -34,6 +34,7 @@ type StepText = {
   question: string
   type: 'text'
   placeholder: string
+  inputType?: 'text' | 'tel'
 }
 type Step = StepChoice | StepText
 
@@ -49,6 +50,13 @@ const STEPS: Step[] = [
     question: 'Qual é o segmento do seu negócio?',
     type: 'text',
     placeholder: 'Ex: clínica estética, oficina, ótica, restaurante, pintura, reforma…',
+  },
+  {
+    id: 'whatsapp',
+    question: 'Qual é o seu WhatsApp para contato?',
+    type: 'text',
+    inputType: 'tel',
+    placeholder: '(48) 9 9000-0000',
   },
   {
     id: 'prazo',
@@ -115,7 +123,13 @@ function ModalInner({ onClose }: { onClose: () => void }) {
     if (!current) return true
     const val = answers[current.id] ?? ''
     if (current.type === 'text') {
-      if (val.trim().length < 2) {
+      if (current.id === 'whatsapp') {
+        const digits = val.replace(/\D/g, '')
+        if (digits.length < 10) {
+          setError('Informe um número de WhatsApp válido (mínimo 10 dígitos).')
+          return false
+        }
+      } else if (val.trim().length < 2) {
         setError('Descreva o segmento com pelo menos 2 caracteres.')
         return false
       }
@@ -155,11 +169,21 @@ function ModalInner({ onClose }: { onClose: () => void }) {
     const final: FormAnswers = {
       empresa: answers.empresa ?? '',
       segmento: answers.segmento ?? '',
+      whatsapp: answers.whatsapp ?? '',
       prazo: answers.prazo ?? '',
       ciente: answers.ciente ?? '',
       briefing: answers.briefing ?? '',
     }
+
     fireLeadEvent(final)
+
+    // Salvar lead no Google Sheets (fire and forget)
+    fetch('/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(final),
+    }).catch(() => {/* fail silently */})
+
     const url = buildWhatsAppUrl(final)
     setTimeout(() => {
       window.open(url, '_blank', 'noopener,noreferrer')
@@ -254,7 +278,8 @@ function ModalInner({ onClose }: { onClose: () => void }) {
                 </div>
               ) : current ? (
                 <input
-                  type="text"
+                  type={(current as StepText).inputType ?? 'text'}
+                  inputMode={(current as StepText).inputType === 'tel' ? 'tel' : 'text'}
                   value={answers[current.id] ?? ''}
                   onChange={(e) => handleText(e.target.value)}
                   placeholder={(current as StepText).placeholder}
