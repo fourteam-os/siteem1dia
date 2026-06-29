@@ -1,6 +1,6 @@
 import { Search, Instagram, AlertTriangle, ArrowRight } from 'lucide-react'
 import { AnimatedSection, StaggerContainer, StaggerItem } from './AnimatedSection'
-import { WHATSAPP_URL } from '@/lib/constants'
+import { PreQualificationTrigger } from './PreQualificationTrigger'
 
 const PROBLEMS = [
   {
@@ -63,14 +63,9 @@ export function Problem() {
             <p className="text-[#6B7280] text-sm">
               A boa notícia: resolver isso é mais rápido e barato do que você imagina.
             </p>
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm font-bold text-[#FF6B00] hover:text-[#FF8C33] transition-colors"
-            >
+            <PreQualificationTrigger className="inline-flex items-center gap-2 text-sm font-bold text-[#FF6B00] hover:text-[#FF8C33] transition-colors">
               Ver como funciona <ArrowRight className="w-4 h-4" />
-            </a>
+            </PreQualificationTrigger>
           </div>
         </AnimatedSection>
       </div>

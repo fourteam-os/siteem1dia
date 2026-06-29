@@ -1,6 +1,6 @@
 import { ArrowRight } from 'lucide-react'
 import { AnimatedSection, StaggerContainer, StaggerItem } from './AnimatedSection'
-import { WHATSAPP_URL } from '@/lib/constants'
+import { PreQualificationTrigger } from './PreQualificationTrigger'
 
 const EXAMPLES = [
   { emoji: '🏥', niche: 'Clínica Estética', headline: 'Realce sua beleza com quem entende do assunto', color: 'border-pink-500/20 hover:border-pink-500/40' },
@@ -59,10 +59,10 @@ export function Examples() {
         </StaggerContainer>
 
         <AnimatedSection className="mt-12 text-center" delay={0.2}>
-          <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="btn-primary">
+          <PreQualificationTrigger className="btn-primary">
             Ver exemplos pelo WhatsApp
             <ArrowRight className="w-4 h-4" />
-          </a>
+          </PreQualificationTrigger>
           <p className="text-xs text-[#6B7280] mt-3">
             Mostre seu negócio e veja como o seu site poderia ficar.
           </p>

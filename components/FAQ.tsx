@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { AnimatedSection } from './AnimatedSection'
-import { WHATSAPP_URL } from '@/lib/constants'
+import { usePreQualification } from './PreQualificationModal'
 
 const FAQS = [
   {
@@ -77,6 +77,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 }
 
 export function FAQ() {
+  const { openModal } = usePreQualification()
   return (
     <section id="faq" className="py-16 sm:py-24 bg-[#F7F7F5]">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -99,9 +100,9 @@ export function FAQ() {
 
         <AnimatedSection className="mt-8 text-center" delay={0.2}>
           <p className="text-sm text-[#6B7280] mb-4">Não encontrou sua dúvida?</p>
-          <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="btn-whatsapp">
+          <button type="button" onClick={openModal} className="btn-whatsapp">
             Perguntar no WhatsApp
-          </a>
+          </button>
         </AnimatedSection>
       </div>
     </section>

@@ -1,6 +1,6 @@
 import { Check, Clock, ArrowRight } from 'lucide-react'
 import { AnimatedSection } from './AnimatedSection'
-import { WHATSAPP_URL } from '@/lib/constants'
+import { PreQualificationTrigger } from './PreQualificationTrigger'
 
 const ITEMS = [
   'Site one page profissional e exclusivo',
@@ -38,10 +38,12 @@ export function Pricing() {
                 {/* Header */}
                 <div className="flex items-start justify-between mb-6">
                   <div>
-                    <span className="text-xs font-bold uppercase tracking-widest text-[#FF6B00]">
-                      Plano Site em 1 Dia
-                    </span>
-                    <div className="mt-3 flex items-end gap-2">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-xs font-bold uppercase tracking-widest text-[#FF6B00]">
+                        Condição de lançamento
+                      </span>
+                    </div>
+                    <div className="mt-2 flex items-end gap-2">
                       <span className="font-display text-[2.8rem] sm:text-5xl md:text-6xl font-bold text-[#FF6B00]">R$497</span>
                       <span className="text-[#6B7280] text-sm mb-2">pagamento único</span>
                     </div>
@@ -54,8 +56,8 @@ export function Pricing() {
 
                 {/* Description */}
                 <p className="text-[#6B7280] text-sm leading-relaxed mb-6 border-b border-white/8 pb-6">
-                  Site one page profissional entregue em até 24h após pagamento confirmado e briefing
-                  completo enviado.
+                  O plano Site em 1 Dia está disponível por R$497 para os primeiros clientes da oferta.
+                  Site one page profissional entregue em até 24h após pagamento confirmado e briefing completo enviado.
                 </p>
 
                 {/* Checklist */}
@@ -71,18 +73,13 @@ export function Pricing() {
                 </ul>
 
                 {/* CTA */}
-                <a
-                  href={WHATSAPP_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2.5 w-full bg-[#FF6B00] hover:bg-[#FF8C33] text-white font-bold text-base py-4 px-6 rounded-2xl transition-all duration-200 shadow-[0_4px_24px_rgba(255,107,0,0.4)] hover:shadow-[0_4px_32px_rgba(255,107,0,0.6)] hover:-translate-y-0.5 active:translate-y-0"
-                >
-                  Quero meu site agora
+                <PreQualificationTrigger className="flex items-center justify-center gap-2.5 w-full bg-[#FF6B00] hover:bg-[#FF8C33] text-white font-bold text-base py-4 px-6 rounded-2xl transition-all duration-200 shadow-[0_4px_24px_rgba(255,107,0,0.4)] hover:shadow-[0_4px_32px_rgba(255,107,0,0.6)] hover:-translate-y-0.5 active:translate-y-0">
+                  Quero contratar por R$497
                   <ArrowRight className="w-5 h-5" />
-                </a>
+                </PreQualificationTrigger>
 
                 <p className="text-center text-xs text-[#6B7280] mt-3">
-                  Vagas limitadas por dia para manter o prazo de 24h de entrega.
+                  Para manter a entrega em até 24h, trabalhamos com vagas limitadas por dia.
                 </p>
               </div>
             </div>

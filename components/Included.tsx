@@ -1,6 +1,6 @@
 import { LayoutTemplate, FileText, Smartphone, MessageCircle, Layers, RefreshCw, Zap } from 'lucide-react'
 import { AnimatedSection, StaggerContainer, StaggerItem } from './AnimatedSection'
-import { WHATSAPP_URL } from '@/lib/constants'
+import { PreQualificationTrigger } from './PreQualificationTrigger'
 
 const ITEMS = [
   {
@@ -98,9 +98,9 @@ export function Included() {
         </StaggerContainer>
 
         <AnimatedSection className="mt-10 text-center" delay={0.2}>
-          <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="btn-primary">
+          <PreQualificationTrigger className="btn-primary">
             Quero tudo isso por R$497 →
-          </a>
+          </PreQualificationTrigger>
           <p className="text-xs text-[#6B7280] mt-3">
             Domínio, hospedagem e manutenção são contratados separadamente conforme sua necessidade.
           </p>

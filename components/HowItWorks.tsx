@@ -1,6 +1,6 @@
 import { MessageCircle, ClipboardList, CreditCard, Eye, CheckCircle } from 'lucide-react'
 import { AnimatedSection, StaggerContainer, StaggerItem } from './AnimatedSection'
-import { WHATSAPP_URL } from '@/lib/constants'
+import { PreQualificationTrigger } from './PreQualificationTrigger'
 
 const STEPS = [
   {
@@ -126,9 +126,9 @@ export function HowItWorks() {
         </div>
 
         <AnimatedSection className="mt-10 sm:mt-12 text-center" delay={0.3}>
-          <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="btn-primary">
-            Começar agora — R$497 →
-          </a>
+          <PreQualificationTrigger className="btn-primary">
+            Começar meu site agora — R$497 →
+          </PreQualificationTrigger>
         </AnimatedSection>
       </div>
     </section>

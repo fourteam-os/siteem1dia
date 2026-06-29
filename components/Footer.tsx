@@ -1,5 +1,5 @@
 import { Logo } from './Logo'
-import { WHATSAPP_URL } from '@/lib/constants'
+import { PreQualificationTrigger } from './PreQualificationTrigger'
 
 export function Footer() {
   const year = new Date().getFullYear()
@@ -39,22 +39,12 @@ export function Footer() {
 
           {/* CTA */}
           <div className="flex flex-col items-center md:items-end gap-3">
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-[#FF6B00] hover:bg-[#FF8C33] text-white font-bold text-sm px-5 py-3 rounded-xl transition-all duration-200 shadow-[0_0_20px_rgba(255,107,0,0.3)]"
-            >
+            <PreQualificationTrigger className="inline-flex items-center gap-2 bg-[#FF6B00] hover:bg-[#FF8C33] text-white font-bold text-sm px-5 py-3 rounded-xl transition-all duration-200 shadow-[0_0_20px_rgba(255,107,0,0.3)]">
               Quero meu site agora →
-            </a>
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs text-[#6B7280] hover:text-[#22C55E] transition-colors"
-            >
+            </PreQualificationTrigger>
+            <PreQualificationTrigger className="text-xs text-[#6B7280] hover:text-[#22C55E] transition-colors">
               ou falar no WhatsApp
-            </a>
+            </PreQualificationTrigger>
           </div>
         </div>
 

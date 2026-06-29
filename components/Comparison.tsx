@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import { Check, X, Minus } from 'lucide-react'
 import { AnimatedSection } from './AnimatedSection'
-import { WHATSAPP_URL } from '@/lib/constants'
+import { PreQualificationTrigger } from './PreQualificationTrigger'
 
 const CRITERIA = [
   { label: 'Tempo para ficar pronto' },
@@ -187,9 +187,9 @@ export function Comparison() {
         </AnimatedSection>
 
         <AnimatedSection className="mt-10 text-center" delay={0.2}>
-          <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="btn-primary">
+          <PreQualificationTrigger className="btn-primary">
             Quero o Site em 1 Dia →
-          </a>
+          </PreQualificationTrigger>
         </AnimatedSection>
       </div>
     </section>

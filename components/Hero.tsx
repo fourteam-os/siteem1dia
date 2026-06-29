@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import { Zap, CreditCard, Headphones } from 'lucide-react'
 import Image from 'next/image'
-import { WHATSAPP_URL } from '@/lib/constants'
+import { usePreQualification } from './PreQualificationModal'
 
 const SEALS = [
   { icon: Zap, text: 'Entrega em até 24h' },
@@ -20,6 +20,7 @@ function WhatsAppIcon() {
 }
 
 export function Hero() {
+  const { openModal } = usePreQualification()
   return (
     <section className="relative min-h-[100dvh] flex flex-col justify-center pt-20 pb-12 sm:pb-16 bg-[#09090B] overflow-hidden">
       {/* Circuit background */}
@@ -78,23 +79,21 @@ export function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={openModal}
                 className="btn-primary text-base"
               >
                 Quero meu site agora →
-              </a>
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              </button>
+              <button
+                type="button"
+                onClick={openModal}
                 className="btn-whatsapp text-base"
               >
                 <WhatsAppIcon />
                 Falar no WhatsApp
-              </a>
+              </button>
             </motion.div>
 
             {/* Seals */}
@@ -110,6 +109,9 @@ export function Hero() {
                   <span>{text}</span>
                 </div>
               ))}
+              <div className="w-full mt-1 text-xs text-[#4B5563]">
+                Condição de lançamento: R$497 · Vagas limitadas por dia.
+              </div>
             </motion.div>
           </div>
 
@@ -121,14 +123,16 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             <div className="absolute -inset-8 bg-[#FF6B00]/6 rounded-3xl blur-2xl" />
-            <Image
-              src="/hero-mockup.png"
-              alt="Exemplo de site profissional criado em 1 dia"
-              width={620}
-              height={480}
-              className="relative w-full max-w-[580px] drop-shadow-2xl animate-float"
-              priority
-            />
+            <div className="relative w-full max-w-[580px] bg-[#09090B] rounded-2xl animate-float">
+              <Image
+                src="/hero-mockup.png"
+                alt="Exemplo de site profissional criado em 1 dia"
+                width={620}
+                height={480}
+                className="w-full drop-shadow-2xl"
+                priority
+              />
+            </div>
           </motion.div>
         </div>
 
@@ -139,14 +143,16 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
-          <Image
-            src="/hero-mockup.png"
-            alt="Exemplo de site profissional criado em 1 dia"
-            width={560}
-            height={430}
-            className="w-full max-w-[480px] sm:max-w-[540px] drop-shadow-2xl"
-            priority
-          />
+          <div className="w-full max-w-[480px] sm:max-w-[540px] bg-[#09090B] rounded-2xl">
+            <Image
+              src="/hero-mockup.png"
+              alt="Exemplo de site profissional criado em 1 dia"
+              width={560}
+              height={430}
+              className="w-full drop-shadow-2xl"
+              priority
+            />
+          </div>
         </motion.div>
       </div>
     </section>

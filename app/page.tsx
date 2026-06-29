@@ -1,3 +1,4 @@
+import { PreQualificationProvider } from '@/components/PreQualificationModal'
 import { Header } from '@/components/Header'
 import { Hero } from '@/components/Hero'
 import { Solution } from '@/components/Solution'
@@ -16,7 +17,7 @@ import { WhatsAppFloat } from '@/components/WhatsAppFloat'
 
 export default function Home() {
   return (
-    <>
+    <PreQualificationProvider>
       <Header />
       <main className="bg-zinc-950">
         <Hero />
@@ -34,6 +35,6 @@ export default function Home() {
       </main>
       <Footer />
       <WhatsAppFloat />
-    </>
+    </PreQualificationProvider>
   )
 }

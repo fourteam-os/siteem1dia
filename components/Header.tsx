@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Menu, X } from 'lucide-react'
 import { Logo } from './Logo'
-import { WHATSAPP_URL } from '@/lib/constants'
+import { usePreQualification } from './PreQualificationModal'
 
 const NAV_LINKS = [
   { label: 'Soluções', href: '#incluso' },
@@ -15,6 +15,7 @@ const NAV_LINKS = [
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const { openModal } = usePreQualification()
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
@@ -54,15 +55,14 @@ export function Header() {
 
           {/* CTA desktop */}
           <div className="hidden md:block">
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={openModal}
               className="inline-flex items-center gap-2 bg-[#FF6B00] hover:bg-[#FF8C33] text-white font-bold text-sm px-5 py-2.5 rounded-xl transition-all duration-200 shadow-[0_0_20px_rgba(255,107,0,0.35)] hover:shadow-[0_0_28px_rgba(255,107,0,0.55)] hover:-translate-y-px"
             >
               Quero meu site
               <span className="text-white/80">→</span>
-            </a>
+            </button>
           </div>
 
           {/* Hamburger */}
@@ -94,15 +94,13 @@ export function Header() {
             </a>
           ))}
           <div className="mt-3 pt-3 border-t border-white/8">
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={closeMenu}
-              className="flex items-center justify-center gap-2 bg-[#FF6B00] hover:bg-[#FF8C33] text-white font-bold py-3.5 rounded-xl transition-colors"
+            <button
+              type="button"
+              onClick={() => { closeMenu(); openModal() }}
+              className="flex w-full items-center justify-center gap-2 bg-[#FF6B00] hover:bg-[#FF8C33] text-white font-bold py-3.5 rounded-xl transition-colors"
             >
               Quero meu site agora →
-            </a>
+            </button>
           </div>
         </nav>
       </div>

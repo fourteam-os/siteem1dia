@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
-import { WHATSAPP_URL } from '@/lib/constants'
+import { usePreQualification } from './PreQualificationModal'
 
 function WhatsAppIcon() {
   return (
@@ -13,6 +13,7 @@ function WhatsAppIcon() {
 }
 
 export function FinalCTA() {
+  const { openModal } = usePreQualification()
   return (
     <section className="py-20 sm:py-28 relative bg-[#09090B] overflow-hidden">
       {/* Circuit bg */}
@@ -45,35 +46,34 @@ export function FinalCTA() {
             Seu negócio online antes de amanhã.
           </p>
 
-          <div className="inline-flex items-center gap-2 bg-[#111113] border border-white/10 rounded-full px-5 py-2.5 mb-10">
+          <div className="inline-flex items-center gap-2 bg-[#111113] border border-[#FF6B00]/25 rounded-full px-5 py-2.5 mb-10">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#FF6B00] flex-shrink-0" />
             <span className="text-sm font-semibold text-[#F7F7F5]">
-              Seu site profissional no ar em até 24h por R$497
+              Garanta sua vaga na condição de lançamento por R$497
             </span>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={openModal}
               className="btn-primary text-base px-8 py-4 w-full sm:w-auto"
             >
-              Quero meu site em 1 dia
+              Garantir minha vaga agora
               <ArrowRight className="w-5 h-5" />
-            </a>
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            </button>
+            <button
+              type="button"
+              onClick={openModal}
               className="btn-whatsapp text-base px-8 py-4 w-full sm:w-auto"
             >
               <WhatsAppIcon />
               Falar no WhatsApp
-            </a>
+            </button>
           </div>
 
           <p className="text-xs text-[#374151] mt-5">
-            Vagas limitadas por dia. Pagamento via PIX, cartão ou boleto.
+            Vagas limitadas por dia para manter o prazo de 24h. Pagamento via PIX, cartão ou boleto.
           </p>
         </motion.div>
       </div>

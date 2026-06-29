@@ -1,6 +1,6 @@
 'use client'
 
-import { WHATSAPP_URL } from '@/lib/constants'
+import { usePreQualification } from './PreQualificationModal'
 
 function WhatsAppIcon() {
   return (
@@ -11,34 +11,33 @@ function WhatsAppIcon() {
 }
 
 export function WhatsAppFloat() {
+  const { openModal } = usePreQualification()
   return (
     <>
       {/* Botão flutuante desktop */}
-      <a
-        href={WHATSAPP_URL}
-        target="_blank"
-        rel="noopener noreferrer"
+      <button
+        type="button"
+        onClick={openModal}
         aria-label="Falar no WhatsApp"
         className="hidden md:flex fixed bottom-8 right-8 z-50 items-center gap-3 bg-[#22C55E] hover:bg-[#16A34A] text-white font-semibold px-5 py-3.5 rounded-2xl shadow-[0_8px_32px_rgba(34,197,94,0.4)] hover:shadow-[0_8px_40px_rgba(34,197,94,0.55)] transition-all duration-300 hover:-translate-y-1"
       >
         <WhatsAppIcon />
         <span className="text-sm">Falar no WhatsApp</span>
-      </a>
+      </button>
 
       {/* Barra fixa mobile */}
       <div
         className="md:hidden fixed bottom-0 left-0 right-0 z-50 px-3 pt-3 bg-[#09090B]/95 backdrop-blur-sm border-t border-white/8"
         style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}
       >
-        <a
-          href={WHATSAPP_URL}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          type="button"
+          onClick={openModal}
           className="flex items-center justify-center gap-2.5 w-full bg-[#22C55E] hover:bg-[#16A34A] text-white font-bold py-4 rounded-xl text-base transition-colors duration-200"
         >
           <WhatsAppIcon />
           Falar no WhatsApp
-        </a>
+        </button>
       </div>
     </>
   )
