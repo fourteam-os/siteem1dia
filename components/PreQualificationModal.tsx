@@ -6,6 +6,7 @@ import {
   useState,
   useCallback,
   useEffect,
+  useRef,
   type ReactNode,
 } from 'react'
 import { X, ArrowLeft, ArrowRight, Check } from 'lucide-react'
@@ -100,9 +101,27 @@ function ModalInner({ onClose }: { onClose: () => void }) {
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState<Partial<FormAnswers>>({})
   const [error, setError] = useState('')
+  const sentRef = useRef(false)
 
   const isFinal = step >= TOTAL
   const current = STEPS[step] as Step | undefined
+
+  function sendToSheets(data: Partial<FormAnswers>, origem: string) {
+    if (sentRef.current) return
+    const hasData = Object.values(data).some((v) => v && v.trim().length > 0)
+    if (!hasData) return
+    sentRef.current = true
+    fetch('/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...data, origem }),
+    }).catch(() => {/* fail silently */})
+  }
+
+  function handleClose() {
+    sendToSheets(answers, isFinal ? 'fechou-tela-final' : `abandonou-etapa-${step + 1}`)
+    onClose()
+  }
 
   // Lock body scroll while open
   useEffect(() => {
@@ -113,11 +132,12 @@ function ModalInner({ onClose }: { onClose: () => void }) {
   // Close on Escape
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') onClose()
+      if (e.key === 'Escape') handleClose()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [onClose])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [answers, step, isFinal])
 
   function validate(): boolean {
     if (!current) return true
@@ -176,13 +196,7 @@ function ModalInner({ onClose }: { onClose: () => void }) {
     }
 
     fireLeadEvent(final)
-
-    // Salvar lead no Google Sheets (fire and forget)
-    fetch('/api/leads', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(final),
-    }).catch(() => {/* fail silently */})
+    sendToSheets(final, 'whatsapp')
 
     const url = buildWhatsAppUrl(final)
     setTimeout(() => {
@@ -198,7 +212,7 @@ function ModalInner({ onClose }: { onClose: () => void }) {
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/75 backdrop-blur-sm"
-        onClick={onClose}
+        onClick={handleClose}
         aria-hidden="true"
       />
 
@@ -211,7 +225,7 @@ function ModalInner({ onClose }: { onClose: () => void }) {
       >
         {/* Close button */}
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-white/8 hover:bg-white/15 flex items-center justify-center transition-colors"
           aria-label="Fechar"
         >
@@ -344,7 +358,7 @@ function ModalInner({ onClose }: { onClose: () => void }) {
             </button>
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               className="mt-4 text-xs text-[#4B5563] hover:text-[#6B7280] transition-colors"
             >
               Fechar
