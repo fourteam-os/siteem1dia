@@ -283,7 +283,7 @@ function ModalInner({ onClose }: { onClose: () => void }) {
                   value={answers[current.id] ?? ''}
                   onChange={(e) => handleText(e.target.value)}
                   placeholder={(current as StepText).placeholder}
-                  className="w-full bg-white/5 border border-white/15 rounded-2xl px-4 py-4 text-sm text-[#F7F7F5] placeholder:text-[#4B5563] focus:outline-none focus:border-[#FF6B00] transition-colors"
+                  className="w-full bg-white/5 border border-white/15 rounded-2xl px-4 py-4 text-base text-[#F7F7F5] placeholder:text-[#4B5563] focus:outline-none focus:border-[#FF6B00] transition-colors"
                   autoFocus
                 />
               ) : null}
