@@ -18,10 +18,10 @@ export function buildWhatsAppUrl(answers: FormAnswers): string {
     `Minhas respostas:\n` +
     `• Empresa/prestador: ${answers.empresa}\n` +
     `• Segmento: ${answers.segmento}\n` +
-    `• Meu WhatsApp: ${answers.whatsapp}\n` +
     `• Prazo desejado: ${answers.prazo}\n` +
     `• Ciente do valor R$497: ${answers.ciente}\n` +
-    `• Briefing e materiais: ${answers.briefing}`
+    `• Briefing e materiais: ${answers.briefing}\n` +
+    `• WhatsApp informado: ${answers.whatsapp}`
 
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`
 }

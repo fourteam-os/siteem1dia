@@ -9,9 +9,20 @@ import {
   useRef,
   type ReactNode,
 } from 'react'
-import { X, ArrowLeft, ArrowRight, Check } from 'lucide-react'
+import { X, ArrowLeft, ArrowRight, Check, AlertCircle } from 'lucide-react'
 import { buildWhatsAppUrl, type FormAnswers } from '@/lib/whatsapp'
-import { fireLeadEvent } from '@/lib/metaPixel'
+import {
+  firePreQualificacaoIniciada,
+  fireLeadQualificado,
+  firePreQualificacaoDesqualificada,
+} from '@/lib/metaPixel'
+import {
+  isValidWhatsApp,
+  isValidSegmento,
+  getDisqualificationReason,
+  cleanWhatsApp,
+  type DisqualificationReason,
+} from '@/lib/qualification'
 
 // ── Context ────────────────────────────────────────────────────────────────
 
@@ -44,17 +55,17 @@ const STEPS: Step[] = [
     id: 'empresa',
     question: 'Você já tem uma empresa ou presta serviço?',
     type: 'choice',
-    options: ['Sim', 'Ainda não', 'Estou começando'],
+    options: ['Sim', 'Ainda não'],
   },
   {
     id: 'segmento',
     question: 'Qual é o segmento do seu negócio?',
     type: 'text',
-    placeholder: 'Ex: clínica estética, oficina, ótica, restaurante, pintura, reforma…',
+    placeholder: 'Ex: clínica estética, oficina, ótica, restaurante…',
   },
   {
     id: 'whatsapp',
-    question: 'Qual é o seu WhatsApp para contato?',
+    question: 'Qual é o seu WhatsApp com DDD?',
     type: 'text',
     inputType: 'tel',
     placeholder: '(48) 9 9000-0000',
@@ -63,19 +74,19 @@ const STEPS: Step[] = [
     id: 'prazo',
     question: 'Você busca um site para quando?',
     type: 'choice',
-    options: ['Hoje', 'Esta semana', 'Este mês', 'Só pesquisando'],
+    options: ['Hoje', 'Esta semana', 'No próximo mês', 'Só pesquisando'],
   },
   {
     id: 'ciente',
     question: 'Você está ciente que o plano Site em 1 Dia custa R$497?',
     type: 'choice',
-    options: ['Sim, quero contratar', 'Quero entender melhor', 'Ainda não posso investir'],
+    options: ['Sim, quero contratar', 'Ainda não posso investir'],
   },
   {
     id: 'briefing',
     question: 'Você consegue preencher o briefing e enviar os materiais para iniciar?',
     type: 'choice',
-    options: ['Sim', 'Preciso organizar', 'Não tenho materiais'],
+    options: ['Sim', 'Preciso organizar', 'Não tenho nada'],
   },
 ]
 
@@ -101,12 +112,22 @@ function ModalInner({ onClose }: { onClose: () => void }) {
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState<Partial<FormAnswers>>({})
   const [error, setError] = useState('')
+  const [disqualReason, setDisqualReason] = useState<DisqualificationReason | null>(null)
   const sentRef = useRef(false)
+  const startedRef = useRef(false)
+  const finalRef = useRef<FormAnswers | null>(null)
 
   const isFinal = step >= TOTAL
+  const isQualifiedFinal = isFinal && disqualReason === null
   const current = STEPS[step] as Step | undefined
 
-  function sendToSheets(data: Partial<FormAnswers>, origem: string) {
+  // ── Sheets ───────────────────────────────────────────────────────────────
+
+  function sendToSheets(
+    data: Partial<FormAnswers>,
+    status: string,
+    motivoDesqualificacao: string,
+  ) {
     if (sentRef.current) return
     const hasData = Object.values(data).some((v) => v && v.trim().length > 0)
     if (!hasData) return
@@ -114,14 +135,19 @@ function ModalInner({ onClose }: { onClose: () => void }) {
     fetch('/api/leads', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...data, origem }),
-    }).catch(() => {/* fail silently */})
+      body: JSON.stringify({ ...data, status, motivoDesqualificacao }),
+    }).catch(() => { /* fail silently */ })
   }
 
+  // ── Close ─────────────────────────────────────────────────────────────────
+
   function handleClose() {
-    sendToSheets(answers, isFinal ? 'fechou-tela-final' : `abandonou-etapa-${step + 1}`)
+    // sendToSheets verifica sentRef internamente — só envia se ainda não enviou
+    sendToSheets(answers, 'Abandonou etapa', `abandonou-etapa-${step + 1}`)
     onClose()
   }
+
+  // ── Effects ──────────────────────────────────────────────────────────────
 
   // Lock body scroll while open
   useEffect(() => {
@@ -136,22 +162,28 @@ function ModalInner({ onClose }: { onClose: () => void }) {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [answers, step, isFinal])
+
+  // ── Validation ───────────────────────────────────────────────────────────
 
   function validate(): boolean {
     if (!current) return true
     const val = answers[current.id] ?? ''
+
     if (current.type === 'text') {
       if (current.id === 'whatsapp') {
-        const digits = val.replace(/\D/g, '')
-        if (digits.length < 10) {
-          setError('Informe um número de WhatsApp válido (mínimo 10 dígitos).')
+        if (!isValidWhatsApp(val)) {
+          setError(
+            'Informe um WhatsApp válido com DDD. O atendimento continuará por esse número.',
+          )
           return false
         }
-      } else if (val.trim().length < 2) {
-        setError('Descreva o segmento com pelo menos 2 caracteres.')
-        return false
+      } else {
+        if (!isValidSegmento(val)) {
+          setError('Informe o segmento do seu negócio (ex: clínica, oficina, restaurante).')
+          return false
+        }
       }
     } else {
       if (!val) {
@@ -159,13 +191,50 @@ function ModalInner({ onClose }: { onClose: () => void }) {
         return false
       }
     }
+
     setError('')
     return true
   }
 
+  // ── Navigation ───────────────────────────────────────────────────────────
+
   function handleNext() {
     if (!validate()) return
-    setStep((s) => s + 1)
+
+    // Dispara PreQualificacaoIniciada na primeira resposta
+    if (step === 0 && !startedRef.current) {
+      startedRef.current = true
+      firePreQualificacaoIniciada()
+    }
+
+    const nextStep = step + 1
+
+    if (nextStep >= TOTAL) {
+      // Formulário completo — monta respostas finais
+      const final: FormAnswers = {
+        empresa: answers.empresa ?? '',
+        segmento: answers.segmento ?? '',
+        whatsapp: cleanWhatsApp(answers.whatsapp ?? ''),
+        prazo: answers.prazo ?? '',
+        ciente: answers.ciente ?? '',
+        briefing: answers.briefing ?? '',
+      }
+      finalRef.current = final
+
+      const reason = getDisqualificationReason(final)
+      setDisqualReason(reason)
+
+      if (reason === null) {
+        // QUALIFICADO — envia para Sheets (pixel Lead dispara no clique do WhatsApp)
+        sendToSheets(final, 'Qualificado', '')
+      } else {
+        // DESQUALIFICADO — dispara pixel e envia para Sheets imediatamente
+        firePreQualificacaoDesqualificada(final, reason)
+        sendToSheets(final, 'Desqualificado', reason)
+      }
+    }
+
+    setStep(nextStep)
   }
 
   function handleBack() {
@@ -185,19 +254,11 @@ function ModalInner({ onClose }: { onClose: () => void }) {
     setAnswers((prev) => ({ ...prev, [current.id]: value }))
   }
 
+  // ── WhatsApp redirect (só para qualificados) ──────────────────────────────
+
   function handleContinueToWhatsApp() {
-    const final: FormAnswers = {
-      empresa: answers.empresa ?? '',
-      segmento: answers.segmento ?? '',
-      whatsapp: answers.whatsapp ?? '',
-      prazo: answers.prazo ?? '',
-      ciente: answers.ciente ?? '',
-      briefing: answers.briefing ?? '',
-    }
-
-    fireLeadEvent(final)
-    sendToSheets(final, 'whatsapp')
-
+    const final = finalRef.current!
+    fireLeadQualificado(final) // dispara Lead + LeadQualificadoSite1Dia + dataLayer
     const url = buildWhatsAppUrl(final)
     setTimeout(() => {
       window.open(url, '_blank', 'noopener,noreferrer')
@@ -205,7 +266,11 @@ function ModalInner({ onClose }: { onClose: () => void }) {
     }, 300)
   }
 
+  // ── Progress ─────────────────────────────────────────────────────────────
+
   const progress = isFinal ? 100 : (step / TOTAL) * 100
+
+  // ── Render ───────────────────────────────────────────────────────────────
 
   return (
     <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4">
@@ -232,6 +297,7 @@ function ModalInner({ onClose }: { onClose: () => void }) {
           <X className="w-4 h-4 text-[#6B7280]" />
         </button>
 
+        {/* ── Form steps ─────────────────────────────────────────────────── */}
         {!isFinal ? (
           <div className="overflow-y-auto flex-1">
             {/* Header */}
@@ -303,13 +369,16 @@ function ModalInner({ onClose }: { onClose: () => void }) {
               ) : null}
 
               {error && (
-                <p className="mt-3 text-xs text-red-400">{error}</p>
+                <p className="mt-3 text-xs text-red-400 flex items-center gap-1.5">
+                  <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                  {error}
+                </p>
               )}
             </div>
 
             {/* Actions */}
             <div
-              className="px-6 pb-6 flex items-center gap-2 mt-2"
+              className="px-6 flex items-center gap-2 mt-2"
               style={{ paddingBottom: 'max(24px, env(safe-area-inset-bottom))' }}
             >
               {step > 0 && (
@@ -332,8 +401,9 @@ function ModalInner({ onClose }: { onClose: () => void }) {
               </button>
             </div>
           </div>
-        ) : (
-          /* Final screen */
+
+        ) : isQualifiedFinal ? (
+          /* ── Tela final: QUALIFICADO ─────────────────────────────────── */
           <div
             className="px-6 py-10 text-center"
             style={{ paddingBottom: 'max(40px, env(safe-area-inset-bottom))' }}
@@ -362,6 +432,31 @@ function ModalInner({ onClose }: { onClose: () => void }) {
               className="mt-4 text-xs text-[#4B5563] hover:text-[#6B7280] transition-colors"
             >
               Fechar
+            </button>
+          </div>
+
+        ) : (
+          /* ── Tela final: DESQUALIFICADO ──────────────────────────────── */
+          <div
+            className="px-6 py-10 text-center"
+            style={{ paddingBottom: 'max(40px, env(safe-area-inset-bottom))' }}
+          >
+            <div className="w-14 h-14 rounded-full bg-[#F59E0B]/12 border border-[#F59E0B]/30 flex items-center justify-center mx-auto mb-5">
+              <AlertCircle className="w-7 h-7 text-[#F59E0B]" />
+            </div>
+            <h2 className="font-display text-xl font-bold text-[#F7F7F5] mb-3 leading-snug">
+              Talvez ainda não seja o melhor momento
+            </h2>
+            <p className="text-[#6B7280] text-sm leading-relaxed mb-8 max-w-xs mx-auto">
+              O Site em 1 Dia é indicado para quem já tem empresa, está ciente do investimento
+              de R$497 e consegue enviar as informações para iniciar.
+            </p>
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-full flex items-center justify-center border border-white/15 text-[#F7F7F5] font-semibold py-4 rounded-2xl transition-colors text-sm hover:bg-white/5 hover:border-white/25"
+            >
+              Ver detalhes da oferta
             </button>
           </div>
         )}
